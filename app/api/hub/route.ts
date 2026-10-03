@@ -6,7 +6,7 @@ import { hubStateSchema } from '../../../lib/family/state-schema';
 export async function GET() {
  const u=await getChatGPTUser(); if(!u) return Response.json({error:'Přihlaste se.'},{status:401});
  const rows=await getDb().select().from(hub).where(eq(hub.owner,u.userId));
- return Response.json(rows[0]?JSON.parse(rows[0].data):null);
+ return Response.json(rows[0]?JSON.parse(rows[0].data):null,{headers:{'Cache-Control':'private, no-store'}});
 }
 export async function POST(req:Request) {
  const u=await getChatGPTUser(); if(!u) return Response.json({error:'Přihlaste se.'},{status:401});
@@ -17,6 +17,10 @@ export async function POST(req:Request) {
  const parsed = hubStateSchema.safeParse(payload);
  if (!parsed.success) return Response.json({error:'Neplatná data'},{status:400});
  const data = parsed.data;
+ if(data.events === undefined){
+  const previous=await getDb().select().from(hub).where(eq(hub.owner,u.userId));
+  data.events=previous[0]?(JSON.parse(previous[0].data).events??[]):[];
+ }
  // Old clients that omit presets must not erase the saved presets.
  if (data.presets === undefined) {
   const previous = await getDb().select().from(hub).where(eq(hub.owner,u.userId));
