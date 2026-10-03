@@ -39,3 +39,7 @@ test('Name days come from the Czech calendar, including multiple names',()=>{
  assert.ok(getNameDay(new Date(2026,9,3)).includes('Bohumil'));
  assert.deepEqual(getNameDay(new Date(2026,11,24)),['Adam','Eva']);
 });
+test('Shared state rejects unknown recipe indexes and invalid shopping records',()=>{
+ assert.equal(hubStateSchema.safeParse({items:[],plan:[{date:'2026-10-05',recipe:99,servings:2}]}).success,false);
+ assert.equal(hubStateSchema.safeParse({items:[{id:'1',name:'Mléko',qty:'2 l',cat:'Mléčné a vejce',done:'yes'}],plan:[]}).success,false);
+});

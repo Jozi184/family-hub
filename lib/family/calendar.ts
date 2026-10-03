@@ -1,4 +1,4 @@
-export type FamilyEvent = { id: string; title: string; date: string; time: string; endDate: string; audience: 'me' | 'shared'; note: string };
+export type FamilyEvent = { id: string; title: string; date: string; time: string; endDate: string; audience: 'me' | 'shared'; note: string; ownerId?: string };
 export type FamilyProfile = { name: string; color: string };
 export const profileColors = ['#416443','#4267ac','#b77727','#ba5757','#33827f'];
 export const sharedColor = '#8955a8';

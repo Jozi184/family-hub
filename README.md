@@ -25,3 +25,22 @@ Google/Apple synchronizace a konverzační AI zatím nejsou připojené. Připra
 Jmeniny: knihovna namedays-cs (MIT), https://github.com/OzzyCzech/namedays-cs
 
 Testy kalendáře a presetů: `node --experimental-strip-types --test tests/*.test.mjs`.
+
+## Supabase účty a společná domácnost
+
+Supabase projekt: `ogactctbykvhlwayfwtt`, region Frankfurt (`eu-central-1`), organizace na Free plánu. Nebyl objednán placený tarif ani SMTP.
+
+Aplikace má skutečné formuláře pro registraci e-mailem a heslem, přihlášení, odhlášení a obnovu hesla přes Supabase Auth. Nový účet vytvoří vlastní domácnost nebo přijme kód pozvánky. Domácnost sdílí nákupy, presety, jídelníček a kalendář; osobní události mají vlastníka a barvu jeho profilu. Změny se kontrolují pomocí revize a ostatní zařízení obnovují data každých 10 sekund.
+
+Data chrání RLS podle členství v domácnosti, nikoli podle uživatelských metadat. Pozvánky mají náhodný kód, platnost 7 dní, nejvýše 4 použití a v databázi se ukládá pouze jejich hash. Každý účet může být členem jedné domácnosti. V první verzi je maximum 5 členů. Správce může obnovit kód pozvánky; tím starý kód přestane platit.
+
+Runtime konfigurace: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (veřejný klíč pro klienta, nikoli service-role klíč). Žádné privilegované Supabase klíče nejsou v klientu ani repozitáři.
+
+### Zbývající nastavení
+
+- Současný Sites hosting je nadále owner-private. Pro používání bez ChatGPT účtu a přístup členů rodiny je nutné výslovně schválit změnu na veřejnou přihlašovací stránku; data zůstávají chráněná Supabase Auth a RLS.
+- V Supabase Authentication / URL Configuration nastavte Site URL a Redirect URL na `https://family-hub-josef.josef-dolezal838830.chatgpt.site/`.
+- Výchozí SMTP doručuje pouze adresám členů organizace a má omezený počet e-mailů. Registrace dalších lidí a obnova hesla vyžadují zprovoznění vhodného odesílání e-mailů. Potvrzování e-mailů nebylo vypnuto.
+- Google/Apple synchronizace a AI nejsou součástí této změny a nadále nejsou připojené.
+
+Původní D1 data zůstávají zachovaná. Správce je může přes nastavení domácnosti přenést do prázdné domácnosti, pokud přihlášený a ověřený Supabase e-mail odpovídá původní identitě ChatGPT. Přenos vyžaduje potvrzení kliknutím a nepřepisuje existující data.
