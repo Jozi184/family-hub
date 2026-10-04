@@ -1,10 +1,12 @@
 'use client';
 import { CalendarDays, ShoppingBasket, Utensils, Plane, House, ArrowRight, Clock, Flower2 } from 'lucide-react';
 import {getNameDay} from 'namedays-cs';
+import type {ImportedEvent} from '../lib/calendar/feed';
+import type {CalendarModel} from '../lib/calendar/use-calendars';
 import FamilyCalendar from './family-calendar';
 import {dateLabel,daysUntil,nextEvent,type FamilyEvent,type FamilyProfile} from '../lib/family/calendar';
-type Props={events:FamilyEvent[];profile:FamilyProfile;today:string;disabled:boolean;onSave:(events:FamilyEvent[])=>Promise<boolean>;navigate:(tab:string)=>void};
+type Props={events:FamilyEvent[];profile:FamilyProfile;today:string;disabled:boolean;onSave:(events:FamilyEvent[])=>Promise<boolean>;navigate:(tab:string)=>void;importedEvents?:ImportedEvent[];calendarModel?:CalendarModel};
 export default function FamilyHome(props:Props){
- const [year,month,day]=props.today.split('-').map(Number);const nameDays=getNameDay(new Date(year,month-1,day));const next=nextEvent(props.events,props.today);const count=next?Math.max(0,daysUntil(next.date,props.today)):null;
+ const [year,month,day]=props.today.split('-').map(Number);const nameDays=getNameDay(new Date(year,month-1,day));const next=nextEvent([...props.events,...(props.importedEvents??[])],props.today);const count=next?Math.max(0,daysUntil(next.date,props.today)):null;
  return <><div className="todaycards"><section className="card todaycard"><CalendarDays size={21}/><div><small>Dnes je</small><h2>{dateLabel(props.today,{weekday:'long'})}</h2><p>{dateLabel(props.today,{day:'numeric',month:'long',year:'numeric'})}</p></div></section><section className="card todaycard"><Flower2 size={21}/><div><small>Svátek má</small><h2>{nameDays.length?nameDays.join(' a '):'Dnes bez jmenin'}</h2><p>Český kalendář jmenin</p></div></section><button className="card todaycard countdown" onClick={()=>props.navigate('Rodinný kalendář')}><Clock size={21}/><div><small>Nejbližší událost</small><h2>{count===null?'Co vás čeká?':count===0?'Dnes':count===1?'Zítra':`Za ${count} dní`}</h2><p>{next?next.title:'Přidej první událost do kalendáře.'}</p></div></button></div><FamilyCalendar {...props} compact/><div className="sectionhead"><h2>Kam dál?</h2><span className="calcaption">Váš rodinný prostor</span></div><div className="hublinks">{[['Rodinný kalendář','Společné termíny a důležité dny',CalendarDays],['Nákupy','Seznamy a vlastní nákupní presety',ShoppingBasket],['Jídelníček','Co budeme vařit tento týden',Utensils],['Cesty','Plánování výletů · připravujeme',Plane],['Domov','Vše kolem domácnosti · připravujeme',House]].map(([tab,caption,icon])=>{const Icon=icon as typeof House;return <button className="card hublink" key={String(tab)} onClick={()=>props.navigate(String(tab))}><Icon size={24}/><div><h3>{tab==='Nákupy'?'Nákupy a jídlo':String(tab)}</h3><p>{String(caption)}</p></div><ArrowRight size={18}/></button>})}</div></>
 }
