@@ -1,0 +1,1 @@
+ create index family_calendar_snapshots_connection_owner_household_idx on public.family_calendar_snapshots(connection_id,owner_id,household_id);
